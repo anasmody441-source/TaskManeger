@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="images/adress.png" type="image/png">
+    <title data-i18n="stats_title">الإحصائيات والتقارير</title>
+    <link rel="stylesheet" href="./style.css">
+    <style>
+        .chart-container {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: var(--bg-color);
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            transition: width 1s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            gap: 1rem;
+            height: 200px;
+            margin-top: 1rem;
+        }
+        
+        .bar-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .bar {
+            width: 100%;
+            background: var(--primary-color);
+            border-radius: 8px 8px 0 0;
+            transition: all 0.5s ease;
+            position: relative;
+            min-height: 20px;
+        }
+        
+        .bar:hover {
+            opacity: 0.8;
+            transform: translateY(-5px);
+        }
+        
+        .bar-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+        
+        .bar-value {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .pie-chart {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin: 2rem auto;
+            position: relative;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .stat-card h2 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-card p {
+            font-size: 1.125rem;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-brand">
+                <img src="images/logo-tasks.png" alt="Logo" class="navbar-logo">
+                <span data-i18n="site_title">مدير المهام اليومية</span>
+            </a>
+            
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
+            
+            <ul class="navbar-menu">
+                <li><a href="index.html" data-i18n="nav_home">الرئيسية</a></li>
+                <li><a href="tasks.html" data-i18n="nav_tasks">المهام</a></li>
+                <li><a href="reminders.html" data-i18n="nav_reminders">التذكيرات</a></li>
+                <li><a href="calendar.html" data-i18n="nav_calendar">التقويم</a></li>
+                <li><a href="statistics.html" data-i18n="nav_statistics">الإحصائيات</a></li>
+                <li><a href="tips.html" data-i18n="nav_tips">نصائح</a></li>
+                <li><button id="languageToggle" class="language-toggle" data-i18n="language_toggle">English</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1 class="mb-3" data-i18n="stats_title">الإحصائيات والتقارير</h1>
+        
+        <!-- Overview Stats -->
+        <div class="grid grid-3 mb-4">
+            <div class="stat-card">
+                <h2 id="completionRate">0%</h2>
+                <p data-i18n="stats_completion_rate">معدل الإنجاز</p>
+            </div>
+            
+            <div class="stat-card" style="background: linear-gradient(135deg, var(--success-color), #059669);">
+                <h2 id="totalCompleted">0</h2>
+                <p data-i18n="home_completed_tasks">المهام المكتملة</p>
+            </div>
+            
+            <div class="stat-card" style="background: linear-gradient(135deg, var(--warning-color), #D97706);">
+                <h2 id="productivityScore">0</h2>
+                <p data-i18n="stats_productivity_score">نقاط الإنتاجية</p>
+            </div>
+        </div>
+
+        <!-- Completion Rate Progress -->
+        <div class="chart-container">
+            <h3 class="mb-2" data-i18n="stats_completion_rate">معدل الإنجاز</h3>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar" style="width: 0%;">0%</div>
+            </div>
+        </div>
+
+        <!-- Tasks by Category -->
+        <div class="chart-container">
+            <h3 class="mb-2" data-i18n="stats_by_category">حسب التصنيف</h3>
+            <div class="bar-chart" id="categoryChart"></div>
+        </div>
+
+        <!-- Tasks by Priority -->
+        <div class="chart-container">
+            <h3 class="mb-2" data-i18n="stats_by_priority">حسب الأولوية</h3>
+            <div class="bar-chart" id="priorityChart"></div>
+        </div>
+
+        <!-- Weekly Progress -->
+        <div class="chart-container">
+            <h3 class="mb-2" data-i18n="stats_weekly_progress">التقدم الأسبوعي</h3>
+            <div id="weeklyStats"></div>
+        </div>
+    </div>
+
+    <script src="./translations.js"></script>
+    <script src="./storage.js"></script>
+    <script src="./script.js"></script>
+    <script>
+        // تحديث الإحصائيات
+        function updateStatistics() {
+            const stats = TaskStorage.getTaskStats();
+            
+            // معدل الإنجاز
+            document.getElementById('completionRate').textContent = stats.completionRate + '%';
+            document.getElementById('progressBar').style.width = stats.completionRate + '%';
+            document.getElementById('progressBar').textContent = stats.completionRate + '%';
+            
+            // المهام المكتملة
+            document.getElementById('totalCompleted').textContent = stats.completed;
+            
+            // نقاط الإنتاجية (حساب بسيط)
+            const productivityScore = Math.min(100, Math.round(stats.completionRate * 1.2));
+            document.getElementById('productivityScore').textContent = productivityScore;
+            
+            // رسم المخططات
+            renderCategoryChart(stats.byCategory);
+            renderPriorityChart(stats.byPriority);
+            renderWeeklyStats();
+        }
+
+        // رسم مخطط التصنيفات
+        function renderCategoryChart(categories) {
+            const container = document.getElementById('categoryChart');
+            const maxValue = Math.max(...Object.values(categories), 1);
+            
+            const categoryNames = {
+                work: t('tasks_filter_work'),
+                personal: t('tasks_filter_personal'),
+                study: t('tasks_filter_study'),
+                other: t('tasks_filter_other')
+            };
+            
+            const colors = {
+                work: 'var(--primary-color)',
+                personal: 'var(--success-color)',
+                study: 'var(--warning-color)',
+                other: 'var(--secondary-color)'
+            };
+            
+            container.innerHTML = Object.entries(categories).map(([key, value]) => {
+                const height = (value / maxValue) * 100;
+                return `
+                    <div class="bar-item">
+                        <div class="bar" style="height: ${height}%; background: ${colors[key]};">
+                            <span class="bar-value">${value}</span>
+                        </div>
+                        <span class="bar-label">${categoryNames[key]}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // رسم مخطط الأولويات
+        function renderPriorityChart(priorities) {
+            const container = document.getElementById('priorityChart');
+            const maxValue = Math.max(...Object.values(priorities), 1);
+            
+            const priorityNames = {
+                high: t('task_priority_high'),
+                medium: t('task_priority_medium'),
+                low: t('task_priority_low')
+            };
+            
+            const colors = {
+                high: 'var(--danger-color)',
+                medium: 'var(--warning-color)',
+                low: 'var(--success-color)'
+            };
+            
+            container.innerHTML = Object.entries(priorities).map(([key, value]) => {
+                const height = (value / maxValue) * 100;
+                return `
+                    <div class="bar-item">
+                        <div class="bar" style="height: ${height}%; background: ${colors[key]};">
+                            <span class="bar-value">${value}</span>
+                        </div>
+                        <span class="bar-label">${priorityNames[key]}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // رسم إحصائيات أسبوعية
+        function renderWeeklyStats() {
+            const tasks = TaskStorage.getAllTasks();
+            const now = new Date();
+            const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+            
+            const weeklyTasks = tasks.filter(t => {
+                const createdDate = new Date(t.createdAt);
+                return createdDate >= weekAgo && createdDate <= now;
+            });
+            
+            const weeklyCompleted = weeklyTasks.filter(t => t.completed).length;
+            const weeklyCompletionRate = weeklyTasks.length > 0 
+                ? Math.round((weeklyCompleted / weeklyTasks.length) * 100) 
+                : 0;
+            
+            const container = document.getElementById('weeklyStats');
+            container.innerHTML = `
+                <div class="grid grid-3" style="margin-top: 1rem;">
+                    <div class="card text-center">
+                        <h3 style="color: var(--primary-color); font-size: 2rem;">${weeklyTasks.length}</h3>
+                        <p style="color: var(--text-secondary);">${t('home_total_tasks')}</p>
+                    </div>
+                    <div class="card text-center">
+                        <h3 style="color: var(--success-color); font-size: 2rem;">${weeklyCompleted}</h3>
+                        <p style="color: var(--text-secondary);">${t('home_completed_tasks')}</p>
+                    </div>
+                    <div class="card text-center">
+                        <h3 style="color: var(--warning-color); font-size: 2rem;">${weeklyCompletionRate}%</h3>
+                        <p style="color: var(--text-secondary);">${t('stats_completion_rate')}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // تهيئة الصفحة
+        document.addEventListener('DOMContentLoaded', () => {
+            updateStatistics();
+        });
+    </script>
+</body>
+
+</html>
