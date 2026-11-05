@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="images/adress.png" type="image/png">
+    <title data-i18n="site_title">مدير المهام اليومية</title>
+    <script>
+        // Apply the saved direction before first paint so English pages don't flash RTL
+        try {
+            document.documentElement.lang = localStorage.getItem('language') || 'ar';
+            document.documentElement.dir = document.documentElement.lang === 'ar' ? 'rtl' : 'ltr';
+        } catch (e) {}
+    </script>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-brand">
+                <img src="images/logo-tasks.png" alt="Logo" class="navbar-logo">
+                <span data-i18n="site_title">مدير المهام اليومية</span>
+            </a>
+            
+            <button type="button" class="mobile-menu-toggle" aria-label="القائمة" aria-expanded="false" aria-controls="navbarMenu" data-i18n-aria-label="nav_menu">☰</button>
+            
+            <ul class="navbar-menu" id="navbarMenu">
+                <li><a href="index.html" data-i18n="nav_home">الرئيسية</a></li>
+                <li><a href="tasks.html" data-i18n="nav_tasks">المهام</a></li>
+                <li><a href="reminders.html" data-i18n="nav_reminders">التذكيرات</a></li>
+                <li><a href="calendar.html" data-i18n="nav_calendar">التقويم</a></li>
+                <li><a href="statistics.html" data-i18n="nav_statistics">الإحصائيات</a></li>
+                <li><a href="tips.html" data-i18n="nav_tips">نصائح</a></li>
+                <li><button id="languageToggle" class="language-toggle" data-i18n="language_toggle">English</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 data-i18n="home_hero_title">نظم حياتك بذكاء</h1>
+            <p data-i18n="home_hero_subtitle">إدارة المهام اليومية بطريقة احترافية وسهلة</p>
+            <a href="tasks.html" class="btn-primary" data-i18n="home_get_started">ابدأ الآن</a>
+        </div>
+    </section>
+
+    <!-- Dashboard -->
+    <div class="container">
+        <h2 class="mb-3" data-i18n="home_dashboard_title">لوحة التحكم</h2>
+        
+        <!-- Stats Cards -->
+        <div class="grid grid-4 mb-4">
+            <div class="stats-card">
+                <div class="stats-icon primary">📋</div>
+                <div class="stats-content">
+                    <h3 id="totalTasks">0</h3>
+                    <p data-i18n="home_total_tasks">إجمالي المهام</p>
+                </div>
+            </div>
+            
+            <div class="stats-card">
+                <div class="stats-icon success">✓</div>
+                <div class="stats-content">
+                    <h3 id="completedTasks">0</h3>
+                    <p data-i18n="home_completed_tasks">المهام المكتملة</p>
+                </div>
+            </div>
+            
+            <div class="stats-card">
+                <div class="stats-icon warning">⏳</div>
+                <div class="stats-content">
+                    <h3 id="pendingTasks">0</h3>
+                    <p data-i18n="home_pending_tasks">المهام المعلقة</p>
+                </div>
+            </div>
+            
+            <div class="stats-card">
+                <div class="stats-icon danger">🔔</div>
+                <div class="stats-content">
+                    <h3 id="todayReminders">0</h3>
+                    <p data-i18n="home_today_reminders">تذكيرات اليوم</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card mb-4">
+            <h3 class="card-title" data-i18n="home_quick_actions">إجراءات سريعة</h3>
+            <div class="flex gap-2">
+                <a href="tasks.html" class="btn btn-success" data-i18n="home_add_task">إضافة مهمة</a>
+                <a href="calendar.html" class="btn btn-warning" data-i18n="home_view_calendar">عرض التقويم</a>
+                <a href="statistics.html" class="btn btn-secondary" data-i18n="home_check_stats">الإحصائيات</a>
+            </div>
+        </div>
+
+        <!-- Recent Tasks -->
+        <div class="card">
+            <h3 class="card-title" data-i18n="home_recent_tasks">المهام الأخيرة</h3>
+            <div id="recentTasksList">
+                <p class="text-center" style="color: var(--text-secondary);" data-i18n="home_no_tasks">لا توجد مهام حالياً</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="./translations.js"></script>
+    <script src="./storage.js"></script>
+    <script src="./script.js"></script>
+    <script>
+        // تحديث الإحصائيات
+        function updateDashboardStats() {
+            const stats = TaskStorage.getTaskStats();
+            const todayReminders = ReminderStorage.getTodayReminders();
+            
+            document.getElementById('totalTasks').textContent = stats.total;
+            document.getElementById('completedTasks').textContent = stats.completed;
+            document.getElementById('pendingTasks').textContent = stats.pending;
+            document.getElementById('todayReminders').textContent = todayReminders.length;
+        }
+
+        // عرض المهام الأخيرة
+        function displayRecentTasks() {
+            const tasks = TaskStorage.getAllTasks().slice(-5).reverse();
+            const container = document.getElementById('recentTasksList');
+            
+            if (tasks.length === 0) {
+                container.innerHTML = `<p class="text-center" style="color: var(--text-secondary);" data-i18n="home_no_tasks">${t('home_no_tasks')}</p>`;
+                return;
+            }
+            
+            container.innerHTML = tasks.map(task => `
+                <div class="task-item ${task.completed ? 'completed' : ''}" style="margin-bottom: 1rem;">
+                    <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''} disabled>
+                    <div class="task-content">
+                        <div class="task-title">${escapeHtml(task.title)}</div>
+                        <div class="task-meta">
+                            <span class="badge badge-${getCategoryColor(task.category)}">${t('tasks_filter_' + task.category)}</span>
+                            <span class="badge badge-${getPriorityColor(task.priority)}">${t('task_priority_' + task.priority)}</span>
+                            ${task.dueDate ? `<span>📅 ${formatDate(task.dueDate)}</span>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // تهيئة الصفحة
+        document.addEventListener('DOMContentLoaded', () => {
+            updateDashboardStats();
+            displayRecentTasks();
+        });
+
+        document.addEventListener('app:languagechange', displayRecentTasks);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="images/adress.png" type="image/png">
+    <title data-i18n="tips_title">نصائح إدارة الوقت</title>
+    <script>
+        // Apply the saved direction before first paint so English pages don't flash RTL
+        try {
+            document.documentElement.lang = localStorage.getItem('language') || 'ar';
+            document.documentElement.dir = document.documentElement.lang === 'ar' ? 'rtl' : 'ltr';
+        } catch (e) {}
+    </script>
+    <link rel="stylesheet" href="./style.css">
+    <style>
+        .tips-hero {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            border-radius: 16px;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .tips-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('images/time-management-tips.jpg') center/cover;
+            opacity: 0.2;
+            z-index: 0;
+        }
+        
+        .tips-hero-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .tip-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .tip-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .tip-card:nth-child(2n) {
+            border-left-color: var(--success-color);
+        }
+        
+        .tip-card:nth-child(3n) {
+            border-left-color: var(--warning-color);
+        }
+        
+        .tip-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .tip-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        
+        .tip-description {
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+        
+        .quote-card {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border-left: 4px solid var(--primary-color);
+            font-style: italic;
+            font-size: 1.125rem;
+            color: var(--text-primary);
+        }
+
+        @media (max-width: 768px) {
+            .tips-hero {
+                padding: 2rem 1.25rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .tip-card {
+                padding: 1.25rem;
+            }
+
+            .tip-icon {
+                font-size: 2.25rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .tip-title {
+                font-size: 1.25rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .quote-card {
+                padding: 1.25rem;
+                margin: 1.5rem 0;
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .tip-card,
+            .quote-card {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-brand">
+                <img src="images/logo-tasks.png" alt="Logo" class="navbar-logo">
+                <span data-i18n="site_title">مدير المهام اليومية</span>
+            </a>
+            
+            <button type="button" class="mobile-menu-toggle" aria-label="القائمة" aria-expanded="false" aria-controls="navbarMenu" data-i18n-aria-label="nav_menu">☰</button>
+            
+            <ul class="navbar-menu" id="navbarMenu">
+                <li><a href="index.html" data-i18n="nav_home">الرئيسية</a></li>
+                <li><a href="tasks.html" data-i18n="nav_tasks">المهام</a></li>
+                <li><a href="reminders.html" data-i18n="nav_reminders">التذكيرات</a></li>
+                <li><a href="calendar.html" data-i18n="nav_calendar">التقويم</a></li>
+                <li><a href="statistics.html" data-i18n="nav_statistics">الإحصائيات</a></li>
+                <li><a href="tips.html" data-i18n="nav_tips">نصائح</a></li>
+                <li><button id="languageToggle" class="language-toggle" data-i18n="language_toggle">English</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="tips-hero">
+            <div class="tips-hero-content">
+                <h1 data-i18n="tips_title">نصائح إدارة الوقت</h1>
+                <p data-i18n="tips_subtitle">تعلم كيف تنظم وقتك وتزيد إنتاجيتك</p>
+            </div>
+        </div>
+
+        <!-- Tips Grid -->
+        <div class="grid grid-2">
+            <!-- Tip 1 -->
+            <div class="tip-card">
+                <div class="tip-icon">🍅</div>
+                <h3 class="tip-title" data-i18n="tips_section1_title">تقنية بومودورو</h3>
+                <p class="tip-description" data-i18n="tips_section1_desc">اعمل لمدة 25 دقيقة ثم خذ استراحة 5 دقائق. هذه التقنية تساعد على التركيز وتجنب الإرهاق.</p>
+            </div>
+
+            <!-- Tip 2 -->
+            <div class="tip-card">
+                <div class="tip-icon">📊</div>
+                <h3 class="tip-title" data-i18n="tips_section2_title">قاعدة 80/20</h3>
+                <p class="tip-description" data-i18n="tips_section2_desc">20% من مهامك تحقق 80% من نتائجك. ركز على المهام الأكثر أهمية أولاً.</p>
+            </div>
+
+            <!-- Tip 3 -->
+            <div class="tip-card">
+                <div class="tip-icon">✂️</div>
+                <h3 class="tip-title" data-i18n="tips_section3_title">تقسيم المهام الكبيرة</h3>
+                <p class="tip-description" data-i18n="tips_section3_desc">قسم المهام الكبيرة إلى مهام صغيرة قابلة للتنفيذ. هذا يجعلها أقل إرهاقاً وأسهل في الإنجاز.</p>
+            </div>
+
+            <!-- Tip 4 -->
+            <div class="tip-card">
+                <div class="tip-icon">🎯</div>
+                <h3 class="tip-title" data-i18n="tips_section4_title">تحديد الأولويات</h3>
+                <p class="tip-description" data-i18n="tips_section4_desc">استخدم مصفوفة أيزنهاور لتصنيف المهام: عاجل ومهم، مهم وغير عاجل، عاجل وغير مهم، غير عاجل وغير مهم.</p>
+            </div>
+
+            <!-- Tip 5 -->
+            <div class="tip-card">
+                <div class="tip-icon">🔕</div>
+                <h3 class="tip-title" data-i18n="tips_section5_title">تجنب التشتت</h3>
+                <p class="tip-description" data-i18n="tips_section5_desc">أغلق الإشعارات وخصص وقتاً محدداً للرد على الرسائل. التركيز المستمر يزيد الإنتاجية بشكل كبير.</p>
+            </div>
+
+            <!-- Tip 6 -->
+            <div class="tip-card">
+                <div class="tip-icon">📅</div>
+                <h3 class="tip-title" data-i18n="tips_section6_title">المراجعة الأسبوعية</h3>
+                <p class="tip-description" data-i18n="tips_section6_desc">خصص وقتاً كل أسبوع لمراجعة إنجازاتك وتخطيط الأسبوع القادم.</p>
+            </div>
+        </div>
+
+        <!-- Motivational Quote -->
+        <div class="quote-card">
+            <p data-i18n="tips_quote">"الوقت أثمن ما تملك، فاستثمره بحكمة في ما يعود عليك بالنفع والتطور."</p>
+        </div>
+
+        <!-- Additional Tips -->
+        <div class="card">
+            <h3 class="card-title" data-i18n="tips_extra_title">نصائح إضافية للإنتاجية</h3>
+            <ul style="line-height: 2; color: var(--text-secondary);">
+                <li data-i18n="tips_extra_1">ابدأ يومك بأصعب مهمة - عندما تكون طاقتك في أعلى مستوياتها</li>
+                <li data-i18n="tips_extra_2">استخدم قوائم المهام اليومية - اكتب 3-5 مهام رئيسية فقط</li>
+                <li data-i18n="tips_extra_3">خذ فترات راحة منتظمة - العقل يحتاج إلى استراحة للحفاظ على التركيز</li>
+                <li data-i18n="tips_extra_4">تعلم قول "لا" - لا تلتزم بأكثر مما تستطيع إنجازه</li>
+                <li data-i18n="tips_extra_5">نظم مساحة عملك - البيئة المرتبة تساعد على التركيز</li>
+                <li data-i18n="tips_extra_6">استخدم التكنولوجيا بذكاء - التطبيقات يمكن أن تساعد أو تشتت، اختر بحكمة</li>
+                <li data-i18n="tips_extra_7">احتفل بإنجازاتك - كافئ نفسك عند إكمال المهام المهمة</li>
+                <li data-i18n="tips_extra_8">تعلم من أخطائك - راجع ما لم ينجح وحسّن استراتيجيتك</li>
+            </ul>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="text-center mt-4 mb-4">
+            <a href="tasks.html" class="btn btn-success" style="font-size: 1.125rem; padding: 1rem 2rem;" data-i18n="tips_cta">
+                ابدأ بتنظيم مهامك الآن →
+            </a>
+        </div>
+    </div>
+
+    <script src="./translations.js"></script>
+    <script src="./storage.js"></script>
+    <script src="./script.js"></script>
+</body>
+
+</html>
